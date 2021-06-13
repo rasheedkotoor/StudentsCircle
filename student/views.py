@@ -1,4 +1,8 @@
+import base64
+
+from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Exists
+from django.views.decorators.csrf import csrf_exempt
 
 from accounts.models import Student, Union, User, FriendRequest
 from django.contrib.auth.decorators import login_required
@@ -195,3 +199,17 @@ def select_my_union(request):
             to_user=union
         )
         return JsonResponse('true', safe=False)
+
+
+@login_required(login_url='/accounts/login')
+def upload_pp(request):
+    print('hi,,,,,,,,,,,,,,,,,,,,,,')
+    pp = request.POST['profile_pic']
+    user = request.user
+    print(user, pp, "9999999999999999999999999999999999")
+    format, imgstr = pp.split(';base64,')
+    ext = format.split('/')[-1]
+    img = ContentFile(base64.b64decode(imgstr), name=user.username + '.' + ext)
+    user.student.profile_img = img
+    user.student.save()
+    return redirect('student:profile')

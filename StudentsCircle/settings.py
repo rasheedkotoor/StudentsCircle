@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'adminn',
     'student',
     'union',
+    'chat',
+    'channels',
 
     'allauth',
     'allauth.account',
@@ -180,3 +182,9 @@ TWILIO_ACCOUNT_SID = 'AC08d83bdc764a2355a9fbe896d1adf2d9'
 TWILIO_PHONE_NUMBER = '+13473913920'
 TWILIO_AUTH_TOKEN = '15aa0e6753cc1dc2381b3f75d20a01b7'
 
+ASGI_APPLICATION = 'StudentsCircle.routing.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}

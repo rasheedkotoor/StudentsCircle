@@ -68,8 +68,8 @@
                         {% endif %}
                     </a>
                     <div class="author-content">
-                        <a class="h4 author-name" href="#">{{ union.user.first_name|upper }}</a>
-                        <div class="country">{{ union.user.union.college_short_name }}, {{ union.user.union.location }}</div>
+                        <a class="h4 author-name" href="#">{{ union.first_name|upper }}</a>
+                        <div class="country">{{ union.union.college_short_name }}, {{ union.union.location }}</div>
                     </div>
                 </div>
             </div>
@@ -86,9 +86,8 @@
 <!--                    </li>-->
                 </ul>
                 <ol class="folw-detail">
-                    <li><span>Posts</span><ins>101</ins></li>
-                    <li><span>Followers</span><ins>1.3K</ins></li>
-                    <li><span>Members</span><ins>22k</ins></li>
+                    <li><span>Posts</span><ins>{{ union.post_set.count }}</ins></li>
+                    <li><span>Members</span><ins>{{ members.count }}</ins></li>
                 </ol>
             </div>
         </div>

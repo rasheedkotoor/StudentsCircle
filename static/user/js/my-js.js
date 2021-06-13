@@ -304,3 +304,55 @@ $(".join_req").on("click", function(){
     });
 });
 
+//__________________________________________add join req req/cancel   __________________________________________//
+//------------------------------------------Studenthome.html-------------------------------------------//
+var imgSrc;
+let result = document.querySelector(".result"),
+    save = document.querySelector("#load"),
+    cropped = document.querySelector("#cropped"),
+    upload = document.querySelector("#imagecrp"),
+    cropper = "";
+
+upload.addEventListener("change", (e) => {
+    if (e.target.files.length) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            if (e.target.result) {
+                // create new image
+                $("#exampleModalCenter").modal("show");
+                let img = document.createElement("img");
+                img.id = "image";
+                img.src = e.target.result;
+
+                result.innerHTML = "";
+
+                result.appendChild(img);
+                cropper = new Cropper(img, {
+                    viewMode: 2,
+                    aspectRatio: 1/1,
+                    autoCropArea: 1,
+                    crop: function (e) {
+                        console.log(e.detail.x);
+                        console.log(e.detail.y);
+                    }
+                });
+            }
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+});
+
+save.addEventListener("click", (e) => {
+    e.preventDefault();
+    imgSrc = cropper
+        .getCroppedCanvas({
+            width: 300,
+            height: 300,
+        })
+        .toDataURL();
+    $("#exampleModalCenter").modal("hide");
+    cropped.src = imgSrc;
+    $('#profile_pic').val(cropped.src)
+    $('#pp_save_btn').removeAttr('hidden');
+});

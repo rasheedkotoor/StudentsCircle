@@ -25,12 +25,14 @@ class UnionDetailView(DetailView):
         user = self.request.user
         username = kwargs['object']
         union = User.objects.get(username=username)
+        members = Student.objects.filter(union=union.pk)
         last_post = union.pk
         post = Post.objects.filter(user=union.pk).order_by('-created').first()
 
         context['user'] = user
         context['post'] = post
         context['union'] = union
+        context['members'] = members
         return context
 
 
