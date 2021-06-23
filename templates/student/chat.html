@@ -1,0 +1,100 @@
+{% extends 'base2.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="page-header" style="padding: 0px 15px 0;">
+            <div class="col-xl-2"  style="float:left;">
+                <h1></h1>
+            </div>
+
+            <div class="chat-box show col-xl-8 bg-light">
+                <div class="chat-head">
+                    <span class="status f-online"></span>
+                    <h6>{{user2}} {{user2.first_name|title}} {{user2.last_name|title}}</h6>
+                </div>
+                <div class="chat-list">
+                    <ul class="ps-container ps-theme-default ps-active-y">
+                        {% for n in messages %}
+                        {% if n.user1 == request.user %}
+                        <li class="me mb-1">
+                            <div class="chat-thumb"><img src="images/resources/chatlist1.jpg" alt=""></div>
+                            <div class="notification-event">
+                                <span class="chat-message-item">{{ n.message }}</span>
+                                <span class="notification-date"><time datetime="2004-07-24T18:18" class="entry-date updated">{{ n.timestamp }}</time></span>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li class="you mb-1">
+                            <div class="chat-thumb"><img src="images/resources/chatlist2.jpg" alt=""></div>
+                            <div class="notification-event">
+                                <span class="chat-message-item">{{ n.message }}</span>
+                                <span class="notification-date"><time class="entry-date updated">{{ n.timestamp }}</time></span>
+                            </div>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                        <li class="me mb-1">
+                            <div class="chat-thumb"><img src="images/resources/chatlist2.jpg" alt=""></div>
+                            <div class="notification-event">
+                                <span id="chat-text" class="chat-message-item"></span>
+                                <span class="notification-date"><time class="entry-date updated">Just now</time></span>
+                            </div>
+                        </li>
+                    </ul>
+                    <textarea name="" id="input" cols="30" rows="2"></textarea>
+                    <input id="submit" class="btn btn-success m-1" type="button" value="send">
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{ room.room_name|json_script:"room_name" }}
+{{ request.user.username|json_script:"user_username" }}
+{{ user1.pk|json_script:"user1" }}
+{{ user2.pk|json_script:"user2" }}
+<script>
+    const user_username = JSON.parse(document.getElementById('user_username').textContent);
+    const user1 = JSON.parse(document.getElementById('user1').textContent);
+    const user2 = JSON.parse(document.getElementById('user2').textContent);
+    const room_name = JSON.parse(document.getElementById('room_name').textContent);
+
+    const chatSocket = new WebSocket(
+        'ws://' +
+        window.location.host +
+        '/ws/chat/' +
+        room_name +
+        '/'
+    );
+
+    document.querySelector('#submit').onclick = function(e){
+        const messageInputDom = document.querySelector('#input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'username': user_username,
+            'user1': user1,
+            'user2': user2,
+            'room_name': room_name,
+        }));
+        messageInputDom.value = '';
+    };
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        document.querySelector('#chat-text').textContent += (data.message + '\n')
+    }
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+        console.error(e);
+    };
+</script>
+
+
+
+{% endblock %}

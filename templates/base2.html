@@ -174,7 +174,11 @@
 				</ul>
 				<div class="user-img">
 					<h5><a href="{% url 'accounts:logout' %}" title=""><i class="ti-power-off"></i>log out</a></h5>
-					<img src="{% static 'user/images/resources/admin.jpg' %}" alt="">
+					{% if user.student.profile_img %}
+					<img src=" {{ user.student.profile_img.url }} " style="width:60px">
+					{% else %}
+					<img src="{% static 'user/images/male.png' %}" style="width:60px">
+					{% endif %}
 					<span class="status f-online"></span>
 					<div class="user-setting">
 						<!-- <span class="seting-title">Chat setting <a href="#" title="">see all</a></span>

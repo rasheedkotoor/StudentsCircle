@@ -71,9 +71,8 @@
 							<!--                    </li>-->
 											</ul>
 											<ol class="folw-detail">
-												<li><span>Posts</span><ins>101</ins></li>
-												<li><span>Followers</span><ins>1.3K</ins></li>
-												<li><span>Members</span><ins>22k</ins></li>
+<!--												<li><span>Posts</span><ins>{{ union.post_set.count }}</ins></li>-->
+												<li><span>Followers</span><ins>{{ members.count }}</ins></li>
 											</ol>
 										</div>
 									</div>
@@ -183,22 +182,23 @@
 							</div>
 
 							<div class="col-lg-3">
-								<div class="central-meta">
-									<div class="create-post">About Union</div>
-									<div class="about-chnl">
-										<ul>
-											<li><span>Union Name:</span> {{ union.username }}</li>
-											<li><span>Collage:</span> {{ union.union.college_name }}</li>
-											<li><span>Located:</span> {{ union.union.location }}</li>
-											<li><span>Posts:</span> {{ union.post_set.count }} Posts Published</li>
-<!--											<li><span>Views:</span> 500,230,198</li>-->
-											<li><span>Followers:</span> {{ union.friendrequest_set.count }}</li>
-										</ul>
-									</div>
-								</div>
+<!--								<div class="central-meta">-->
+<!--									<div class="create-post">About Union</div>-->
+<!--									<div class="about-chnl">-->
+<!--										<ul>-->
+<!--											<li><span>Union Name:</span> {{ union.username }}</li>-->
+<!--											<li><span>Collage:</span> {{ union.union.college_name }}</li>-->
+<!--											<li><span>Located:</span> {{ union.union.location }}</li>-->
+<!--											<li><span>Posts:</span> {{ union.post_set.count }} Posts Published</li>-->
+<!--&lt;!&ndash;											<li><span>Views:</span> 500,230,198</li>&ndash;&gt;-->
+<!--											<li><span>Followers:</span> {{ union.friendrequest_set.count }}</li>-->
+<!--										</ul>-->
+<!--									</div>-->
+<!--								</div>-->
 
 								<div class="central-meta">
-									<div class="create-post">Send Message</div>
+<!--									send messages-->
+									<div class="create-post">888888</div>
 <!--									<div class="contact-box">-->
 <!--										<form method="post" class="c-form">-->
 <!--											<div>-->

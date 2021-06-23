@@ -1,5 +1,6 @@
 import base64
 
+from django.contrib import messages
 from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Exists
 from django.views.decorators.csrf import csrf_exempt
@@ -14,7 +15,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, TemplateView
 
-from .models import Post, Comment, SubComment, Like
+from .models import Post, Comment, SubComment, Like, Room, Message
 from .forms import CreatePostForm, ProfileUpdateForm1, ProfileUpdateForm2
 
 
@@ -30,6 +31,7 @@ class UserHomeView(LoginRequiredMixin, View):
         union = User.objects.filter(is_union=True)
         post = Post.objects.all()
         my_post = Post.objects.filter(user=request.user)
+        friends = request.user.user_set.all()
         sent_friend_requests = FriendRequest.objects.filter(from_user=request.user)
         rec_friend_requests = FriendRequest.objects.filter(to_user=request.user)
         lu = request.user
@@ -39,31 +41,32 @@ class UserHomeView(LoginRequiredMixin, View):
 
         context = {"post_form": post_form, 'student': student, 'union': union,
                    'po': po, 'post': post, 'sent_friend_requests': sent_friend_requests,
-                   'rec_friend_requests': rec_friend_requests}
+                   'rec_friend_requests': rec_friend_requests, 'friends': friends}
 
         return render(request, self.template_name, context)
 
     def post(self, request: WSGIRequest) -> HttpResponse:
         post_form = CreatePostForm(request.POST, request.FILES)
-
-        if post_form.is_valid():
+        if not post_form.is_valid():
+            messages.warning(self.request, 'Enter some text or Choose any file')
+            return redirect('student:home')
+        elif post_form.is_valid():
             obj = post_form.save(commit=False)
             obj.user = request.user
             obj.save()
             return redirect('student:home')
 
-        context = {"post_form": CreatePostForm()}
-        return render(request, self.template_name, context)
-
 
 @login_required(login_url='/accounts/login')
 def add_comment(request):
-    cmnt = request.POST['comment']
-    post_id = request.POST['postid']
-    post = Post.objects.get(pk=post_id)
-    new_cmnt = Comment.objects.create(user=request.user, post=post, comment=cmnt)
-    # return redirect('student://///////home')
-    return JsonResponse('added', safe=False)
+    if request.POST['comment'] == '':
+        return JsonResponse('error', safe=False)
+    else:
+        cmnt = request.POST['comment']
+        post_id = request.POST['postid']
+        post = Post.objects.get(pk=post_id)
+        new_cmnt = Comment.objects.create(user=request.user, post=post, comment=cmnt)
+        return JsonResponse('added', safe=False)
 
 
 @login_required(login_url='/accounts/login')
@@ -203,13 +206,30 @@ def select_my_union(request):
 
 @login_required(login_url='/accounts/login')
 def upload_pp(request):
-    print('hi,,,,,,,,,,,,,,,,,,,,,,')
     pp = request.POST['profile_pic']
     user = request.user
-    print(user, pp, "9999999999999999999999999999999999")
     format, imgstr = pp.split(';base64,')
     ext = format.split('/')[-1]
     img = ContentFile(base64.b64decode(imgstr), name=user.username + '.' + ext)
     user.student.profile_img = img
     user.student.save()
     return redirect('student:profile')
+
+
+@login_required(login_url='/accounts/login')
+def chat_room(request, pk):
+    user1 = request.user
+    friends = user1.friends.all()
+    if User.objects.filter(pk=pk).exists():
+        user2 = User.objects.get(pk=pk)
+        if Room.objects.filter(user2=user1, user1=user2).exists():
+            room = Room.objects.get(user2=user1, user1=user2)
+        else:
+            room, created = Room.objects.get_or_create(user1=user1, user2=user2)
+        messages_order = Message.objects.filter(room=room).order_by('-id')[:9]
+        messages = reversed(messages_order)
+        context = {'room': room, 'user1': user1, 'user2': user2, 'friends': friends, 'messages': messages}
+        return render(request, 'student/chat.html', context)
+    else:
+        return redirect('student:friends')
+

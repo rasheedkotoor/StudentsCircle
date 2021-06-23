@@ -4882,24 +4882,20 @@ canvas {
 .chat-box {
     background: #fbfbfb none repeat scroll 0 0;
     border-radius: 3px;
-    bottom: -2px;
-    position: absolute;
-    right: 100%;
-    width: 300px;
+    position: inherit;
     z-index: 9999999;
-    transform: translate(40px) scale(0);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s linear 0s;
     border: 1px solid #e1e8ed;
     text-align: left;
+    overflow: auto;
+
+
+
+
 	box-shadow: -15px -15px 20px rgba(0, 0, 0, 0.2);
 }
 
 .chat-box.show {
-    transform: translate(0) scale(1);
-    opacity: 1;
-    visibility: visible;
+
 }
 
 .chat-head {
@@ -4989,7 +4985,6 @@ canvas {
 .chat-list > ul {
     margin: 0;
     padding-left: 0;
-    max-height: 290px;
     overflow: hidden;
     position: relative;
     padding-right: 8px;

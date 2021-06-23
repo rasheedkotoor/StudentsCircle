@@ -11,4 +11,4 @@ def index(request):
 def room(request, room_name):
     # context = ''
     # context['room_name'] = room_name
-    return render(request, 'chat/chatroom.html', {'room_name': room_name})
+    return render(request, 'chat/catroom.html', {'room_name': room_name})

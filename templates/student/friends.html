@@ -60,7 +60,7 @@
 											<div class="friend-box">
 												<figure>
 													<img src="{% static 'user/images/resources/frnd-cover1.jpg' %}" alt="">
-													<span>Followers: 120</span>
+													<span>Followers: {{ fri.friends.count }}</span>
 												</figure>
 												<div class="frnd-meta">
 													<img src="{% static 'user/images/resources/frnd-figure1.jpg' %}" alt="">
@@ -73,7 +73,7 @@
 														<li><span>Post:</span> {{ fri.post_set.count }}</li>
 														<li><span>Since:</span> {{ fri.student.timestamp|date:"M d, Y" }}</li>
 													</ul>
-													<a class="send-mesg" href="#" title="">Message</a>
+													<a href="{% url 'student:chat_room' pk=fri.pk %}" class="btn btn-primary" title="">Message</a>
 <!--													<div class="more-opotnz">-->
 <!--														<i class="fa fa-ellipsis-h"></i>-->
 <!--														<ul>-->
@@ -87,6 +87,7 @@
 											</div>
 										</div>
 										{% endfor %}
+
 									</div>
 
 								</div>
@@ -97,6 +98,7 @@
 			</div>
 		</div>
 	</section>
+
 
 
 {% endblock %}
