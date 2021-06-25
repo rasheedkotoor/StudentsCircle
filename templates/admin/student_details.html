@@ -26,7 +26,12 @@
 										<div class="col-lg-2">
 											<div class="profile-author">
 												<a class="profile-author-thumb" href="about.html">
-													<img alt="author" src="{% static 'user/images/resources/fav-dp.jpg' %}">
+<!--													<img alt="author" src="{% static 'user/images/resources/fav-dp.jpg' %}">-->
+													{% if user.student.profile_img %}
+													<img src=" {{ user.student.profile_img.url }} " style="width:45px">
+													{% else %}
+													<img src="{% static 'user/images/male.png' %}" style="width:45px">
+													{% endif %}
 													<div class="edit-dp">
 														<label class="fileContainer">
 															<i class="fa fa-camera"></i>

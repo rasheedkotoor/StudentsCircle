@@ -27,13 +27,20 @@ class UserHomeView(LoginRequiredMixin, View):
 
     def get(self, request: WSGIRequest) -> HttpResponse:
         post_form = CreatePostForm()
-        student = User.objects.filter(is_union=False, is_superuser=False).exclude(pk=request.user.pk)
+
         union = User.objects.filter(is_union=True)
+        sent_friend_requests = FriendRequest.objects.filter(from_user=request.user)
+        rec_friend_requests = FriendRequest.objects.filter(to_user=request.user)
         post = Post.objects.all()
         my_post = Post.objects.filter(user=request.user)
         friends = request.user.user_set.all()
-        sent_friend_requests = FriendRequest.objects.filter(from_user=request.user)
-        rec_friend_requests = FriendRequest.objects.filter(to_user=request.user)
+        friends_pk = [f.pk for f in friends]
+        req_pk = [f.to_user.pk for f in sent_friend_requests]
+        rec_pk = [f.from_user.pk for f in rec_friend_requests]
+        numb = req_pk + friends_pk + rec_pk  # numb is all other users
+        numb.append(request.user.pk)
+        student = User.objects.filter(is_union=False, is_superuser=False).exclude(pk__in=numb)
+
         lu = request.user
         po = ''
         for po in post:
@@ -146,7 +153,10 @@ def edit_profile_data(request):
         me.save()
         return JsonResponse('true', safe=False)
     elif differ == 'interests':
-        me.interests.append(data)
+        if me.interests == '':
+            me.interests = [data]
+        else:
+            me.interests.append(data)
         me.save()
         return JsonResponse('true', safe=False)
 
@@ -226,7 +236,7 @@ def chat_room(request, pk):
             room = Room.objects.get(user2=user1, user1=user2)
         else:
             room, created = Room.objects.get_or_create(user1=user1, user2=user2)
-        messages_order = Message.objects.filter(room=room).order_by('-id')[:9]
+        messages_order = Message.objects.filter(room=room).order_by('-id')[:5]
         messages = reversed(messages_order)
         context = {'room': room, 'user1': user1, 'user2': user2, 'friends': friends, 'messages': messages}
         return render(request, 'student/chat.html', context)

@@ -30,29 +30,34 @@ class ChatRoomConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         username = text_data_json['username']
+        message_type = text_data_json['message_type']
         user1_id = text_data_json['user1']
         user2_id = text_data_json['user2']
 
         room = Room.objects.get(room_name=self.room_name)
         user1 = User.objects.get(id=user1_id)
         user2 = User.objects.get(id=user2_id)
-        Message.objects.create(room=room, user1=user1, user2=user2, message=message)
+        Message.objects.create(room=room, user1=user1, message_type=message_type, user2=user2, message=message)
+
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
                 'type': 'chatroom_message',
                 'message': message,
                 'username': username,
+                'message_type': message_type,
             }
         )
 
     def chatroom_message(self, event):  # Send message to WebSocket
         message = event['message']
         username = event['username']
+        message_type = event['message_type']
 
         async_to_sync(self.send(text_data=json.dumps({
             'message': message,
             'username': username,
+            'message_type': message_type,
         })))
 
 #

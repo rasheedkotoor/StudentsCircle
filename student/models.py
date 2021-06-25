@@ -104,8 +104,13 @@ class Message(models.Model):
     room = models.ForeignKey(Room, related_name='messages', on_delete=models.CASCADE)
     user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='m_from_user')
     user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='m_to_user')
+    message_type = models.CharField(max_length=10, default='text')
     timestamp = models.DateTimeField(default=timezone.now, db_index=True)
     message = models.TextField('message')
+    msg_img = models.ImageField(upload_to='msg_img/', height_field=None, width_field=None, blank=True, null=True)
+    vid_img = models.FileField(upload_to='vid_img/', blank=True, null=True)
+    aud_img = models.FileField(upload_to='aud_img/', blank=True, null=True)
+    pdf_img = models.FileField(upload_to='pdf_img/', blank=True, null=True)
 
 
 

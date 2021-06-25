@@ -90,7 +90,13 @@
 										<ul class="followers">
 											{% for std in members %}
 											<li>
-												<figure><img src="{% static 'user/images/resources/friend-avatar2.jpg' %}" alt=""></figure>
+												<figure>
+													{% if std.profile_img %}
+														<img src=" {{ std.profile_img.url }} " style="width:45px">
+													{% else %}
+														<img src="{% static 'user/images/male.png' %}" style="width:45px">
+													{% endif %}
+												</figure>
 												<div class="friend-meta">
 													<h4><a href="time-line.html" title=""> {{ std.user.username }}</a></h4>
 													<a  title="Friend Request" class="friend_req  p-0" type="submit" data-user_id="{{std.id}}"></a>

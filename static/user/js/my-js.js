@@ -292,7 +292,6 @@ $(".join_req").on("click", function(){
     var value = $(this).text();
     var union_id = $(this).attr('data-union_id');
     var user_id = $(this).attr('data-user_id');
-    console.log(value, union_id, user_id, "|||||||||||||||||||||||||||||||||||||||")
     var data = {
         'csrfmiddlewaretoken' : csrftoken,
         'union_id' : union_id,
@@ -309,5 +308,10 @@ $(".join_req").on("click", function(){
     });
 });
 
-//__________________________________________   __________________________________________//
-//------------------------------------------.html-------------------------------------------//
+//__________________________________________  message_imgae  __________________________________________//
+//------------------------------------------.demo           -------------------------------------------//
+
+$("#message_image").on("input", function(){
+    var imagebase64 = $(this).val;
+    console.log(imagebase64, "/////////////////////////////////////")
+})

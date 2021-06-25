@@ -72,3 +72,17 @@ def add_page_admin(request):
         print("somthidsn wronge")
         return JsonResponse('false', safe=False)
 
+
+class StudentsListView(TemplateView):
+    template_name = "admin/student_list.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(StudentsListView, self).get_context_data(**kwargs)
+        context['students'] = User.objects.filter(is_verified=True)
+
+        return context
+
+
+class StudentDetailView(DetailView):
+    model = User
+    template_name = 'admin/student_details.html'
